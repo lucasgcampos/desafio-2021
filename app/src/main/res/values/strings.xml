@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">challenge</string>
+
+    <!-- RepositoryAdapter -->
+    <string name="item_author_label">Author: %s</string>
+    <string name="item_repository_description_label">Description: %s</string>
 </resources>
