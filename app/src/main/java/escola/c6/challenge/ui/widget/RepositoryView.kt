@@ -17,7 +17,7 @@ class RepositoryView(context: Context) : ConstraintLayout(context) {
     private val description by lazy { findViewById<TextView>(R.id.txt_repository_description) }
 
     init {
-        inflate(R.layout.item_repository)
+        inflate(R.layout.item_repository, attachToRoot = true)
         layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         setPadding(resources.getDimensionPixelSize(R.dimen.spacing_medium))
     }

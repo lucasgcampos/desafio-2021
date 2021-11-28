@@ -16,6 +16,5 @@ class RepositoryResponse(
 
 class OwnerResponse(
     @SerializedName("login") val login: String,
-    @SerializedName("description") val description: String,
     @SerializedName("avatar_url") val avatar: String,
 )
