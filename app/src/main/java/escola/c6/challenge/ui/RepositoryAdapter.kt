@@ -12,7 +12,8 @@ private const val JAVA_VIEW_TYPE = 42
 private const val REPOSITORY_VIEW_TYPE = 7
 
 class RepositoryAdapter(
-    repositories: List<RepositoryResponse>
+    repositories: List<RepositoryResponse>,
+    private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = mutableListOf<ViewTypeSample>()
@@ -36,7 +37,7 @@ class RepositoryAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is RepositoryViewHolder) {
-            holder.bind((items[position] as RepositoryViewType).repository)
+            holder.bind((items[position] as RepositoryViewType).repository, onClick)
         }
     }
 
@@ -49,8 +50,9 @@ class JavaViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 class RepositoryViewHolder(private val view: RepositoryView) : RecyclerView.ViewHolder(view) {
 
-    fun bind(repository: RepositoryResponse) {
+    fun bind(repository: RepositoryResponse, onClick: (String) -> Unit) {
         view.setup(repository)
+        view.setOnClickListener { onClick(repository.owner.login) }
     }
 }
 
