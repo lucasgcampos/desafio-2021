@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import escola.c6.challenge.extension.doRequest
-import escola.c6.challenge.extension.isEmpty
-import escola.c6.challenge.network.CacheLocal
 import escola.c6.challenge.network.RetrofitConfig
 import escola.c6.challenge.network.model.RepositoryResponse
+import escola.c6.challenge.network.model.RepositoryWrapperResponse
 
 class RepositoryViewModel : ViewModel() {
 
@@ -16,14 +15,12 @@ class RepositoryViewModel : ViewModel() {
         get() = _repositories
 
     fun fetchRepositories() {
-        if (_repositories.isEmpty()) {
-            RetrofitConfig.api.fetchRepositories().doRequest(
-                tag = "abc",
-                cache = CacheLocal.repository,
-                onSuccess = {
-                    _repositories.postValue(it.items)
-                }
-            )
-        }
+        RetrofitConfig.api.fetchRepositories().doRequest(
+            tag = "abc",
+            clazz = RepositoryWrapperResponse::class.java,
+            onSuccess = {
+                _repositories.postValue(it.items)
+            }
+        )
     }
 }
