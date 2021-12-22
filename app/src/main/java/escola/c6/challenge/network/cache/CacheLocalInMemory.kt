@@ -1,4 +1,4 @@
-package escola.c6.challenge.network
+package escola.c6.challenge.network.cache
 
 import escola.c6.challenge.network.model.RepositoryWrapperResponse
 

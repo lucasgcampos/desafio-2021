@@ -1,9 +1,9 @@
 package escola.c6.challenge.extension
 
 import escola.c6.challenge.network.Cache
-import escola.c6.challenge.network.CacheLocalDisk.exist
-import escola.c6.challenge.network.CacheLocalDisk.find
-import escola.c6.challenge.network.CacheLocalDisk.save
+import escola.c6.challenge.network.cache.CacheLocalDisk.exist
+import escola.c6.challenge.network.cache.CacheLocalDisk.find
+import escola.c6.challenge.network.cache.CacheLocalDisk.save
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

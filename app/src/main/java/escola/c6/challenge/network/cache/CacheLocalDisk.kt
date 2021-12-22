@@ -1,4 +1,4 @@
-package escola.c6.challenge.network
+package escola.c6.challenge.network.cache
 
 import android.content.Context
 import android.content.SharedPreferences
