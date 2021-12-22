@@ -8,7 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setPadding
 import escola.c6.challenge.R
 import escola.c6.challenge.extension.inflate
-import escola.c6.challenge.network.model.RepositoryResponse
+import escola.c6.challenge.ui.model.Repository
 
 class RepositoryView(context: Context) : ConstraintLayout(context) {
 
@@ -22,7 +22,7 @@ class RepositoryView(context: Context) : ConstraintLayout(context) {
         setPadding(resources.getDimensionPixelSize(R.dimen.spacing_medium))
     }
 
-    fun setup(repository: RepositoryResponse) {
+    fun setup(repository: Repository) {
         name.text = repository.name
         author.text = context.getString(R.string.item_author_label, repository.owner.login)
         description.text = context.getString(R.string.item_repository_description_label, repository.description)

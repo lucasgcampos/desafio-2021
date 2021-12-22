@@ -8,46 +8,75 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-fun <T> Call<T>.doRequest(
+fun <T, ENTITY, MODEL> Call<T>.doRequest(
+    find: () -> List<ENTITY>,
+    save: (List<ENTITY>) -> Unit,
+    onSuccess: (List<MODEL>) -> Unit,
+    onError: (Throwable) -> Unit = { },
+    transformBackendToDataBase: (T) -> List<ENTITY>,
+    transformBackendToView: (T) -> List<MODEL>,
+    transformDatabaseToView: (List<ENTITY>) -> List<MODEL>
+) {
+    val results = find()
+
+    if (results.isNotEmpty()) {
+        onSuccess(transformDatabaseToView(results))
+        return
+    }
+
+    enqueueWithCache(
+        onSuccess = onSuccess,
+        onError = onError,
+        storeData = { save(transformBackendToDataBase(it)) },
+        transform = transformBackendToView
+    )
+}
+
+fun <T, MODEL> Call<T>.doRequest(
     tag: String,
     clazz: Class<T>,
-    onSuccess: (T) -> Unit,
-    onError: (Throwable) -> Unit = { }
+    onSuccess: (List<MODEL>) -> Unit,
+    onError: (Throwable) -> Unit = { },
+    transform: (T) -> List<MODEL>
 ) {
     if (exist(tag)) {
-        onSuccess(find(tag, clazz))
+        onSuccess(transform(find(tag, clazz)))
         return
     }
 
     enqueueWithCache(
         onSuccess = onSuccess,
         onError = onError,
-        storeData = { save(tag, it) }
+        storeData = { save(tag, it) },
+        transform = transform
     )
 }
 
-fun <T> Call<T>.doRequest(
+fun <T, MODEL> Call<T>.doRequest(
     tag: String,
     cache: Cache<T>,
-    onSuccess: (T) -> Unit,
-    onError: (Throwable) -> Unit = { }
+    onSuccess: (List<MODEL>) -> Unit,
+    onError: (Throwable) -> Unit = { },
+    transform: (T) -> List<MODEL>,
 ) {
     cache[tag]?.let {
-        onSuccess(it)
+        onSuccess(transform(it))
         return
     }
 
     enqueueWithCache(
         onSuccess = onSuccess,
         onError = onError,
-        storeData = { cache[tag] = it }
+        storeData = { cache[tag] = it },
+        transform = transform
     )
 }
 
-private fun <T> Call<T>.enqueueWithCache(
-    onSuccess: (T) -> Unit,
+private fun <T, MODEL> Call<T>.enqueueWithCache(
+    onSuccess: (List<MODEL>) -> Unit,
     onError: (Throwable) -> Unit = { },
-    storeData: (T) -> Unit
+    storeData: (T) -> Unit,
+    transform: (T) -> List<MODEL>
 ) {
     enqueue(
         object : Callback<T> {
@@ -55,7 +84,7 @@ private fun <T> Call<T>.enqueueWithCache(
                 val item = response.body() as T
 
                 if (response.isSuccessful) {
-                    onSuccess(item)
+                    onSuccess(transform(item))
                     storeData(item)
                 }
             }

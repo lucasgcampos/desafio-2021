@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import escola.c6.challenge.R
 import escola.c6.challenge.extension.inflate
-import escola.c6.challenge.network.model.RepositoryResponse
+import escola.c6.challenge.ui.model.Repository
 import escola.c6.challenge.ui.widget.RepositoryView
 
 private const val JAVA_VIEW_TYPE = 42
 private const val REPOSITORY_VIEW_TYPE = 7
 
 class RepositoryAdapter(
-    repositories: List<RepositoryResponse>,
+    repositories: List<Repository>,
     private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -50,7 +50,7 @@ class JavaViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 class RepositoryViewHolder(private val view: RepositoryView) : RecyclerView.ViewHolder(view) {
 
-    fun bind(repository: RepositoryResponse, onClick: (String) -> Unit) {
+    fun bind(repository: Repository, onClick: (String) -> Unit) {
         view.setup(repository)
         view.setOnClickListener { onClick(repository.owner.login) }
     }
@@ -58,5 +58,5 @@ class RepositoryViewHolder(private val view: RepositoryView) : RecyclerView.View
 
 abstract class ViewTypeSample(val viewType: Int)
 class JavaViewType: ViewTypeSample(JAVA_VIEW_TYPE)
-class RepositoryViewType(val repository: RepositoryResponse) : ViewTypeSample(REPOSITORY_VIEW_TYPE)
+class RepositoryViewType(val repository: Repository) : ViewTypeSample(REPOSITORY_VIEW_TYPE)
 
