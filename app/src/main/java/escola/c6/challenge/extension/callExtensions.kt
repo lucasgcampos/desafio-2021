@@ -19,21 +19,10 @@ fun <T> Call<T>.doRequest(
         return
     }
 
-    enqueue(
-        object : Callback<T> {
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                val item = response.body() as T
-
-                if (response.isSuccessful) {
-                    save(tag, item)
-                    onSuccess(item)
-                }
-            }
-
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                onError(t)
-            }
-        }
+    enqueueWithCache(
+        onSuccess = onSuccess,
+        onError = onError,
+        storeData = { save(tag, it) }
     )
 }
 
@@ -48,15 +37,26 @@ fun <T> Call<T>.doRequest(
         return
     }
 
+    enqueueWithCache(
+        onSuccess = onSuccess,
+        onError = onError,
+        storeData = { cache[tag] = it }
+    )
+}
 
+private fun <T> Call<T>.enqueueWithCache(
+    onSuccess: (T) -> Unit,
+    onError: (Throwable) -> Unit = { },
+    storeData: (T) -> Unit
+) {
     enqueue(
         object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 val item = response.body() as T
 
                 if (response.isSuccessful) {
-                    cache[tag] = item
                     onSuccess(item)
+                    storeData(item)
                 }
             }
 
